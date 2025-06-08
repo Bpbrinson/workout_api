@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Workout</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        form {
+            max-width: 600px;
+            margin: auto;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        #exercise_fields h4 {
+            margin-top: 20px;
+            color: #007bff;
+        }
+
+        input[type="submit"] {
+            background-color: #28a745;
+            color: white;
+            padding: 12px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 6px;
+            width: 100%;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #218838;
+        }
+
+        .message-success {
+            color: green;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .message-error {
+            color: red;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-links li a:hover {
+    color: #007bff;
+}
+
+.nav-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.nav-btn:hover {
+    background-color: #0056b3;
+}
+
+    </style>
+
+    <script>
+        function showExerciseFields() {
+            const count = parseInt(document.getElementById("exercise_count").value);
+            const container = document.getElementById("exercise_fields");
+            container.innerHTML = "";
+
+            for (let i = 0; i < count; i++) {
+                container.innerHTML += `
+                    <h4>Exercise ${i + 1}</h4>
+                    <label>Exercise Name:</label>
+                    <input type="text" name="exercise_name_${i}" required>
+
+                    <label>Sets:</label>
+                    <input type="number" name="exercise_sets_${i}" required>
+
+                    <label>Reps:</label>
+                    <input type="number" name="exercise_reps_${i}" required>
+                `;
+            }
+        }
+    </script>
+</head>
+<body>
+    <nav class="navbar">
+  <div class="logo">B-Fit Genie</div>
+  <ul class="nav-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/go-to-upload">Upload</a></li>
+    <li><a href="/view-workouts">View Workouts</a></li>
+    <li><a href="/generator">Generator</a></li>
+    <li><a href="#">Contact Us</a></li>
+  </ul>
+  <a href="/register" class="nav-btn">Register</a>
+</nav>
+    <h1>Upload a Workout</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <p class="message-{{ 'success' if category == 'success' else 'error' }}">{{ message }}</p>
+      {% endfor %}
+    {% endwith %}
+
+    <form method="POST">
+        <label>Workout Name:</label>
+        <input type="text" name="name" required>
+
+        <label>Body Part:</label>
+        <input type="text" name="body_part" required>
+
+        <label>Duration (mins):</label>
+        <input type="number" name="duration" required>
+
+        <label>Level:</label>
+        <input type="text" name="level" required>
+
+        <label>Equipment:</label>
+        <input type="text" name="equipment">
+
+        <label>How many exercises?</label>
+        <select id="exercise_count" onchange="showExerciseFields()">
+            <option value="0">-- Select --</option>
+            {% for i in range(1, 11) %}
+                <option value="{{ i }}">{{ i }}</option>
+            {% endfor %}
+        </select>
+
+        <div id="exercise_fields"></div>
+
+        <input type="submit" value="Submit Workout">
+    </form>
+</body>
+</html>
